@@ -7,3 +7,7 @@
 //
 
 import Foundation
+
+struct CoinRateData {
+    let rate: Double
+}
