@@ -9,16 +9,16 @@
 import UIKit
 
 class ViewController: UIViewController {
-
     @IBOutlet weak var bitCoinLabel: UILabel!
     @IBOutlet weak var currencyLabel: UILabel!
     @IBOutlet weak var currencyPicker: UIPickerView!
     
-    let coinManager = CoinManager()
+    var coinManager = CoinManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        coinManager.delegate = self
         currencyPicker.dataSource = self
         currencyPicker.delegate = self
     }
@@ -36,7 +36,7 @@ extension ViewController: UIPickerViewDataSource {
     }
 }
 
-// MARK: - VC extension UIPickerViewDelegate
+// MARK: - VC extension. Adopt UIPickerViewDelegate
 extension ViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return self.coinManager.currencyArray[row]
@@ -45,5 +45,19 @@ extension ViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let selectedCurrency = self.coinManager.currencyArray[row]
         self.coinManager.getCoinPrice(for: selectedCurrency)
+    }
+}
+
+// MARK: - VC extension. Adopt CoinManagerDelegate
+extension ViewController: CoinManagerDelegate {
+    func didUpdateCurrancyRate(_ coinManager: CoinManager, with coinModel: CoinModel) {
+        DispatchQueue.main.async {
+            self.bitCoinLabel.text = coinModel.rateString
+            self.currencyLabel.text = coinModel.currency
+        }
+    }
+    
+    func didFailWithError(_ coinManager: CoinManager, _ error: Error) {
+        print(error)
     }
 }

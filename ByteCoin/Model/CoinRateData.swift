@@ -8,6 +8,7 @@
 
 import Foundation
 
-struct CoinRateData {
+struct CoinRateData: Codable {
     let rate: Double
+    let asset_id_quote: String
 }
